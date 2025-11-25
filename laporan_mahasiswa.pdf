@@ -1,0 +1,24 @@
+%PDF-1.1
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R >> endobj
+4 0 obj << /Length 534 >> stream
+BT /F1 18 Tf 50 800 Td (Laporan Data Mahasiswa) Tj ET
+
+BT /F1 12 Tf 50 780 Td (Dicetak oleh: Universitas Kristen Satya Wacana) Tj ET
+BT /F1 12 Tf 50 760 Td (Tanggal Cetak: 25-11-2025 20:06) Tj ET
+BT /F1 12 Tf 50 740 Td (--------------------------------------------) Tj ET
+BT /F1 12 Tf 50 710 Td (ID: 42) Tj ET
+BT /F1 12 Tf 50 690 Td (NIM: 672025042) Tj ET
+BT /F1 12 Tf 50 670 Td (Nama: Prasetyo) Tj ET
+BT /F1 12 Tf 50 650 Td (Umur: 20 tahun) Tj ET
+BT /F1 12 Tf 50 630 Td (IPK: 3.84) Tj ET
+BT /F1 12 Tf 50 610 Td (Status: Aktif) Tj ET
+endstream endobj
+xref
+0 5
+0000000000 65535 f 
+trailer << /Root 1 0 R /Size 5 >>
+startxref
+500
+%EOF

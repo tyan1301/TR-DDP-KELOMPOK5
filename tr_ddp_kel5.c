@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> // untuk fungsi manipulasi karakter seperti tolower()
+#include <time.h>
 
 #define MAX 100
 
@@ -338,6 +339,85 @@ void statistikMahasiswa(){
     printf("IPK Terendah    : %.2f (%s)\n", minIPK, data[idxMin].nama);
 }
 
+void cetakPDF(struct Mahasiswa m) {
+    FILE *pdf = fopen("laporan_mahasiswa.pdf", "w");
+
+    if (!pdf) {
+        printf("Gagal membuat PDF!\n");
+        return;
+    }
+
+    // ambil tanggal current
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    char tanggal[40];
+    strftime(tanggal, sizeof(tanggal), "%d-%m-%Y %H:%M", t);
+
+    const char *UNIVERSITAS = "Universitas Kristen Satya Wacana";
+
+    fprintf(pdf, "%%PDF-1.1\n");
+    fprintf(pdf, "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n");
+    fprintf(pdf, "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n");
+    fprintf(pdf, "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R >> endobj\n");
+
+    char content[6000] = "";
+    char line[300];
+
+    // Judul
+    sprintf(line, "BT /F1 18 Tf 50 800 Td (Laporan Data Mahasiswa) Tj ET\n");
+    strcat(content, line);
+
+    // Dicetak oleh
+    sprintf(line, "\nBT /F1 12 Tf 50 780 Td (Dicetak oleh: %s) Tj ET\n", UNIVERSITAS);
+    strcat(content, line);
+
+    // Tanggal
+    sprintf(line, "BT /F1 12 Tf 50 760 Td (Tanggal Cetak: %s) Tj ET\n", tanggal);
+    strcat(content, line);
+
+    // Garis
+    sprintf(line, "BT /F1 12 Tf 50 740 Td (--------------------------------------------) Tj ET\n");
+    strcat(content, line);
+
+    // Data mahasiswa
+    sprintf(line, "BT /F1 12 Tf 50 710 Td (ID: %d) Tj ET\n", m.id);
+    strcat(content, line);
+
+    sprintf(line, "BT /F1 12 Tf 50 690 Td (NIM: %s) Tj ET\n", m.nim);
+    strcat(content, line);
+
+    sprintf(line, "BT /F1 12 Tf 50 670 Td (Nama: %s) Tj ET\n", m.nama);
+    strcat(content, line);
+
+    sprintf(line, "BT /F1 12 Tf 50 650 Td (Umur: %d tahun) Tj ET\n", m.umur);
+    strcat(content, line);
+
+    sprintf(line, "BT /F1 12 Tf 50 630 Td (IPK: %.2f) Tj ET\n", m.ipk);
+    strcat(content, line);
+
+    sprintf(line, "BT /F1 12 Tf 50 610 Td (Status: %s) Tj ET\n", m.status);
+    strcat(content, line);
+
+    fprintf(pdf, "4 0 obj << /Length %lu >> stream\n", strlen(content));
+    fprintf(pdf, "%s", content);
+    fprintf(pdf, "endstream endobj\n");
+
+    fprintf(pdf, "xref\n0 5\n0000000000 65535 f \n");
+    fprintf(pdf, "trailer << /Root 1 0 R /Size 5 >>\n");
+    fprintf(pdf, "startxref\n500\n%%EOF");
+
+    fclose(pdf);
+
+    printf("\nPDF berhasil dibuat: laporan_mahasiswa.pdf\n");
+}
+
+void tekanEnter(){
+    printf("\nTekan ENTER untuk kembali ke menu utama...");
+    while (getchar() != '\n');
+    getchar();
+}
+
+
 // Sistem Login
 int login(struct User *loggedIn){
     FILE *f = fopen("akun.txt", "r");
@@ -371,19 +451,24 @@ int login(struct User *loggedIn){
 
 int main() {
     struct User user;
+    bacaData();
 
     if (!login(&user)) {
         printf("Login Gagal! Username atau password salah.\n");
         return 0;
     }
 
-    printf("\nSelamat Datang, %s! (Role: %s)\n", user.username, user.role);
+    printf("\nSelamat Datang, %s! (Role: %s)\n\n", user.username, user.role);
+    printf("Tekan ENTER untuk melanjutkan...");
+    getchar();
+    getchar();
+
 
     int pilihan;
-    bacaData();
 
     if (strcmp(user.role, "admin") == 0) {
         do {
+            system("cls");
             printf("\n======= MENU MAHASISWA =======\n");
             printf("1. Tambah Data\n");
             printf("2. Tampilkan Data\n");
@@ -393,30 +478,80 @@ int main() {
             printf("6. Sorting Data berdasarkan IPK\n");
             printf("7. Statistik Mahasiswa\n");
             printf("8. Simpan ke File\n");
-            printf("9. Keluar\n");
+            printf("9. Cetak PDF\n");
+            printf("10. Keluar\n");
             printf("==========================\n");
             printf("Pilih menu: ");
             scanf("%d", &pilihan);
 
             switch (pilihan) {
-                case 1: tambahData(); break;
-                case 2: tampilData(); break;
-                case 3: editData(); break;
-                case 4: hapusData(); break;
-                case 5: cariData(); break;
-                case 6: urutkanData(); break;
-                case 7: statistikMahasiswa(); break;
-                case 8: simpanData(); break;
-                case 9:
+                case 1:
+                    system("cls");
+                    tambahData();
+                    tekanEnter();
+                    break;
+                case 2:
+                    system("cls");
+                    tampilData();
+                    tekanEnter();
+                    break;
+                case 3:
+                    system("cls");
+                    editData();
+                    tekanEnter();
+                    break;
+                case 4:
+                    system("cls");
+                    hapusData();
+                    tekanEnter();
+                    break;
+                case 5:
+                    system("cls");
+                    cariData();
+                    tekanEnter();
+                    break;
+                case 6:
+                    system("cls");
+                    urutkanData();
+                    tekanEnter();
+                    break;
+                case 7:
+                    system("cls");
+                    statistikMahasiswa();
+                    tekanEnter();
+                    break;
+                case 8:
+                    system("cls");
+                    simpanData();
+                    tekanEnter();
+                    break;
+                case 9: {
+                    system("cls");
+                    char nimCetak[20];
+                    printf("Masukkan NIM mahasiswa yang ingin dicetak: ");
+                    scanf(" %[^\n]", nimCetak);
+
+                    int idx = findIndexByNIM(nimCetak);
+                    if (idx == -1) {
+                            printf("NIM tidak ditemukan!\n");
+                    } else {
+                        cetakPDF(data[idx]);
+                    }
+                    tekanEnter();
+                    break;
+                    }
+                case 10:
                     printf("\nProgram selesai. Terima kasih!\n");
                     break;
                 default:
                     printf("Pilihan tidak valid!\n");
             }
+            printf("\nTekan Enter untuk kembali ke Menu Utama...");
         } while (pilihan != 9);
 
     } else if (strcmp(user.role, "user") == 0) {
         do {
+            system("cls");
             printf("\n======= MENU MAHASISWA =======\n");
             printf("1. Tampilkan Data\n");
             printf("2. Cari Data\n");
@@ -426,8 +561,16 @@ int main() {
             scanf("%d", &pilihan);
 
             switch (pilihan) {
-                case 1: tampilData(); break;
-                case 2: cariData(); break;
+                case 1:
+                    system("cls");
+                    tampilData();
+                    tekanEnter();
+                    break;
+                case 2:
+                    system("cls");
+                    cariData();
+                    tekanEnter();
+                    break;
                 case 3:
                     printf("Keluar dari sistem...\n");
                     break;
